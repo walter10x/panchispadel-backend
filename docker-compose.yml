@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: panchispadel-api
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: development
+      PORT: '3000'
+      DB_HOST: db
+      DB_PORT: '5432'
+      DB_NAME: panchispadel
+      DB_USER: panchispadel
+      DB_PASSWORD: panchispadel_secret
+      JWT_ACCESS_SECRET: dev_access_secret_key_2026
+      JWT_REFRESH_SECRET: dev_refresh_secret_key_2026
+      JWT_ACCESS_EXPIRES_IN: 15m
+      JWT_REFRESH_EXPIRES_IN: 7d
+      CORS_ORIGIN: http://localhost:8080
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: panchispadel-db
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: panchispadel
+      POSTGRES_USER: panchispadel
+      POSTGRES_PASSWORD: panchispadel_secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U panchispadel']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: panchispadel-pgadmin
+    ports:
+      - '5050:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@panchispadel.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  pgdata:

@@ -1,0 +1,6 @@
+export interface PaginatedResponseDTO<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}

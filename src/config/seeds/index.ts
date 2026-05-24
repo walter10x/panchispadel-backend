@@ -1,0 +1,11 @@
+import { AppDataSource } from '../database';
+import { seedClubs } from './clubs-seed';
+
+async function runSeeds(): Promise<void> {
+  await AppDataSource.initialize();
+  await seedClubs();
+  await AppDataSource.destroy();
+  console.log('Seeds completed');
+}
+
+runSeeds().catch(console.error);
