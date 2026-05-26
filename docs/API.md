@@ -1164,8 +1164,8 @@ Auth: Sí
     {
       "id": "n2o3t4i5-f6i7-8901-bcde-f12345678901",
       "type": "PLAYER_JOINED",
-      "title": "Nuevo jugador en tu partido",
-      "body": "Ana García se ha unido a tu partido en Pádel Indoor Logroño",
+      "title": "Solicitud de unión",
+      "body": "Ana García solicita unirse a tu partido en Pádel Indoor Logroño",
       "data": {
         "matchId": "m2n3b4v5-c6x7-8901-erty-f12345678901",
         "playerId": "b2c3d4e5-f6a7-8901-bcde-f12345678901"

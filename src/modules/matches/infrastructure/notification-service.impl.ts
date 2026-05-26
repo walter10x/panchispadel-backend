@@ -15,8 +15,8 @@ export class NotificationServiceImpl implements INotificationService {
     await this.createNotification.execute({
       userId: creatorId,
       type: 'player_joined',
-      title: 'Nuevo jugador',
-      message: `${playerName} se ha unido a tu partido`,
+      title: 'Solicitud de unión',
+      message: `${playerName} solicita unirse a tu partido`,
       matchId,
       ...(playerId !== undefined ? { playerId } : {}),
       playerName,
@@ -92,7 +92,7 @@ export class NotificationServiceImpl implements INotificationService {
       userId: playerId,
       type: 'player_joined',
       title: 'Confirmado',
-      message: `${playerName} ha sido confirmado en el partido`,
+      message: `¡Has sido confirmado en el partido!`,
       matchId,
       playerName,
     });
@@ -103,7 +103,7 @@ export class NotificationServiceImpl implements INotificationService {
         await this.createNotification.execute({
           userId,
           type: 'player_joined',
-          title: 'Nuevo jugador',
+          title: 'Jugador confirmado',
           message: `${playerName} se ha unido al partido`,
           matchId,
           playerName,
@@ -121,7 +121,7 @@ export class NotificationServiceImpl implements INotificationService {
       userId: playerId,
       type: 'player_rejected',
       title: 'Rechazado',
-      message: `${playerName} no ha sido aceptado en el partido`,
+      message: `Tu solicitud para unirte al partido no ha sido aceptada`,
       matchId,
       playerName,
     });
