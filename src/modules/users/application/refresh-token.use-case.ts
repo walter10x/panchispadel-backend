@@ -32,7 +32,7 @@ export class RefreshTokenUseCase {
       }
 
       const email = user.email.toString();
-      const name = (payload as Record<string, unknown>).name ?? user.name;
+      const name = (payload as Record<string, unknown>)['name'] ?? user.name;
       const newPayload = { userId: user.id, email, name: name as string };
 
       const newAccessToken = jwt.sign(newPayload, env.JWT_ACCESS_SECRET, {
