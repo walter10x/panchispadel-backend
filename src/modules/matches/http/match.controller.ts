@@ -116,7 +116,6 @@ export class MatchController {
         req.params['matchId']!,
         req.user!.userId,
         req.params['playerId']!,
-        req.body['playerName'] ?? req.params['playerId']!,
       );
 
       res.json(result);
@@ -135,7 +134,6 @@ export class MatchController {
         req.params['matchId']!,
         req.user!.userId,
         req.params['playerId']!,
-        req.body['playerName'] ?? req.params['playerId']!,
       );
 
       res.json(result);

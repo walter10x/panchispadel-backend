@@ -18,7 +18,6 @@ export class ConfirmPlayerUseCase {
     matchId: string,
     creatorId: string,
     playerId: string,
-    playerName: string,
   ): Promise<MatchResponseDTO> {
     const match = await this.matchRepository.findById(matchId);
     if (!match) {
@@ -27,6 +26,9 @@ export class ConfirmPlayerUseCase {
     if (match.creatorId !== creatorId) {
       throw new ValidationError('Solo el creador puede confirmar jugadores');
     }
+
+    const player = match.players.find((p) => p.playerId === playerId);
+    const playerName = player?.email ?? playerId;
 
     match.confirmPlayer(playerId);
     await this.matchRepository.save(match);
