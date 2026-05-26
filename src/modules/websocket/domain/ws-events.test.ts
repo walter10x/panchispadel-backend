@@ -256,5 +256,11 @@ describe('WsEvents — payload shape (compile-time)', () => {
       playerId: 'player-1',
     };
     expect(payloadWithPlayer.playerId).toBe('player-1');
+    // playerName is optional
+    const payloadWithPlayerName: NotificationNewPayload = {
+      ...payload,
+      playerName: 'Juan',
+    };
+    expect(payloadWithPlayerName.playerName).toBe('Juan');
   });
 });

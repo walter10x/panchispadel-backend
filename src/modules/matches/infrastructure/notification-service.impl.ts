@@ -19,6 +19,7 @@ export class NotificationServiceImpl implements INotificationService {
       message: `${playerName} se ha unido a tu partido`,
       matchId,
       playerId,
+      playerName,
     });
   }
 
@@ -33,6 +34,7 @@ export class NotificationServiceImpl implements INotificationService {
       title: 'Jugador salió',
       message: `${playerName} ha salido del partido`,
       matchId,
+      playerName,
     });
   }
 
@@ -48,6 +50,7 @@ export class NotificationServiceImpl implements INotificationService {
         title: 'Partido cancelado',
         message: `${creatorName} ha cancelado el partido`,
         matchId,
+        playerName: creatorName,
       });
     }
   }
@@ -91,6 +94,7 @@ export class NotificationServiceImpl implements INotificationService {
       title: 'Confirmado',
       message: `${playerName} ha sido confirmado en el partido`,
       matchId,
+      playerName,
     });
 
     // Notify other confirmed players
@@ -102,6 +106,7 @@ export class NotificationServiceImpl implements INotificationService {
           title: 'Nuevo jugador',
           message: `${playerName} se ha unido al partido`,
           matchId,
+          playerName,
         });
       }
     }
@@ -118,6 +123,7 @@ export class NotificationServiceImpl implements INotificationService {
       title: 'Rechazado',
       message: `${playerName} no ha sido aceptado en el partido`,
       matchId,
+      playerName,
     });
   }
 }

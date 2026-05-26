@@ -44,7 +44,7 @@ describe('NotificationController', () => {
           id: 'n1', userId: 'user-1',
           type: NotificationType.from('match_created'),
           title: 'Título', message: 'Mensaje',
-          read: false, matchId: undefined,
+          read: false, matchId: undefined, playerName: undefined,
           createdAt: new Date(),
         }),
       ];
@@ -95,7 +95,7 @@ describe('NotificationController', () => {
         id: 'n1', userId: 'user-1',
         type: NotificationType.from('match_created'),
         title: 'Título', message: 'Mensaje',
-        read: false, matchId: undefined,
+        read: false, matchId: undefined, playerName: undefined,
         createdAt: new Date(),
       });
       repo.findById.mockResolvedValue(notification);

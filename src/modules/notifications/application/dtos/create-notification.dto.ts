@@ -5,4 +5,5 @@ export interface CreateNotificationDTO {
   message: string;
   matchId?: string;
   playerId?: string;
+  playerName?: string;
 }

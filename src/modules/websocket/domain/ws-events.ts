@@ -82,6 +82,7 @@ export interface NotificationNewPayload {
   message: string;
   matchId?: string;
   playerId?: string;
+  playerName?: string;
   timestamp: string;
 }
 

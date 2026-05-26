@@ -56,6 +56,7 @@ export class TypeOrmNotificationRepository implements INotificationRepository {
     orm.title = domain.title;
     orm.message = domain.message;
     orm.matchId = domain.matchId ?? null;
+    orm.playerName = domain.playerName ?? null;
     orm.read = domain.read;
     orm.createdAt = domain.createdAt;
     return orm;
@@ -70,6 +71,7 @@ export class TypeOrmNotificationRepository implements INotificationRepository {
       message: orm.message,
       read: orm.read,
       matchId: orm.matchId ?? undefined,
+      playerName: orm.playerName ?? undefined,
       createdAt: orm.createdAt,
     });
   }

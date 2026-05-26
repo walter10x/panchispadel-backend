@@ -13,6 +13,7 @@ describe('NotificationMapper', () => {
         message: 'Un jugador se ha unido al partido',
         read: false,
         matchId: 'match-123',
+        playerName: 'Juan',
         createdAt: new Date('2024-06-01T10:00:00.000Z'),
       });
 
@@ -25,6 +26,7 @@ describe('NotificationMapper', () => {
       expect(dto.message).toBe('Un jugador se ha unido al partido');
       expect(dto.read).toBe(false);
       expect(dto.matchId).toBe('match-123');
+      expect(dto.playerName).toBe('Juan');
       expect(dto.createdAt).toBe('2024-06-01T10:00:00.000Z');
     });
 
@@ -37,12 +39,14 @@ describe('NotificationMapper', () => {
         message: 'Mensaje',
         read: true,
         matchId: undefined,
+        playerName: undefined,
         createdAt: new Date(),
       });
 
       const dto = NotificationMapper.toResponse(notification);
 
       expect(dto.matchId).toBeUndefined();
+      expect(dto.playerName).toBeUndefined();
     });
   });
 });

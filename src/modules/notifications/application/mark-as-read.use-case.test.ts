@@ -30,6 +30,7 @@ function makeNotification(
     message: 'Mensaje',
     read,
     matchId: undefined,
+    playerName: undefined,
     createdAt: new Date(),
   });
 }

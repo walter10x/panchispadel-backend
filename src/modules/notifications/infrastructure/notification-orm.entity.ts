@@ -24,6 +24,9 @@ export class NotificationOrmEntity {
   @Column({ type: 'uuid', name: 'match_id', nullable: true })
   matchId!: string | null;
 
+  @Column({ type: 'varchar', length: 255, name: 'player_name', nullable: true })
+  playerName!: string | null;
+
   @Column({ type: 'boolean', default: false })
   read!: boolean;
 

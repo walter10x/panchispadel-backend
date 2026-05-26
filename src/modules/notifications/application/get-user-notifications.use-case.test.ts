@@ -31,6 +31,7 @@ function makeNotification(
     message: 'Mensaje',
     read,
     matchId: undefined,
+    playerName: undefined,
     createdAt,
   });
 }
@@ -82,6 +83,7 @@ describe('GetUserNotificationsUseCase', () => {
     expect(dto.message).toBe('Mensaje');
     expect(dto.read).toBe(false);
     expect(dto.matchId).toBeUndefined();
+    expect(dto.playerName).toBeUndefined();
     expect(dto.createdAt).toBe(date.toISOString());
   });
 });

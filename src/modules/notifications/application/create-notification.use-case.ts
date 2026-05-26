@@ -25,6 +25,7 @@ export class CreateNotificationUseCase {
       title: dto.title,
       message: dto.message,
       ...(dto.matchId !== undefined ? { matchId: dto.matchId } : {}),
+      ...(dto.playerName !== undefined ? { playerName: dto.playerName } : {}),
     });
 
     await this.repo.save(notification);
@@ -46,6 +47,7 @@ export class CreateNotificationUseCase {
         message: dto.message,
         ...(dto.matchId !== undefined ? { matchId: dto.matchId } : {}),
         ...(dto.playerId !== undefined ? { playerId: dto.playerId } : {}),
+        ...(dto.playerName !== undefined ? { playerName: dto.playerName } : {}),
         timestamp: notification.createdAt.toISOString(),
       };
       this.wsGateway.emitToUser(dto.userId, WS_EVENT_NOTIFICATION_NEW, payload);

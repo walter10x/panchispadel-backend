@@ -11,6 +11,7 @@ export class NotificationMapper {
       message: notification.message,
       read: notification.read,
       matchId: notification.matchId,
+      playerName: notification.playerName,
       createdAt: notification.createdAt.toISOString(),
     };
   }

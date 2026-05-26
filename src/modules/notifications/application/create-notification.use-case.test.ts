@@ -68,6 +68,16 @@ describe('CreateNotificationUseCase', () => {
     expect(result.matchId).toBe('match-123');
   });
 
+  it('guarda notificación con playerName opcional', async () => {
+    const repo = createMockRepo();
+    const useCase = new CreateNotificationUseCase(repo);
+
+    const dto = validDto({ playerName: 'Juan' });
+    const result = await useCase.execute(dto);
+
+    expect(result.playerName).toBe('Juan');
+  });
+
   it('lanza error si type no es válido', async () => {
     const repo = createMockRepo();
     const useCase = new CreateNotificationUseCase(repo);
@@ -113,7 +123,7 @@ describe('CreateNotificationUseCase', () => {
     };
     const useCase = new CreateNotificationUseCase(repo, undefined, wsGateway);
 
-    const dto = validDto({ matchId: 'match-123', playerId: 'player-1' });
+    const dto = validDto({ matchId: 'match-123', playerId: 'player-1', playerName: 'Juan' });
     await useCase.execute(dto);
 
     expect(wsGateway.emitToUser).toHaveBeenCalledTimes(1);
@@ -125,6 +135,7 @@ describe('CreateNotificationUseCase', () => {
         type: 'match_created',
         matchId: 'match-123',
         playerId: 'player-1',
+        playerName: 'Juan',
       }),
     );
   });

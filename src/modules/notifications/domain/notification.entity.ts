@@ -8,6 +8,7 @@ export interface NotificationCreateParams {
   title: string;
   message: string;
   matchId?: string;
+  playerName?: string;
 }
 
 export interface NotificationReconstituteParams {
@@ -18,6 +19,7 @@ export interface NotificationReconstituteParams {
   message: string;
   read: boolean;
   matchId: string | undefined;
+  playerName: string | undefined;
   createdAt: Date;
 }
 
@@ -27,6 +29,7 @@ export class Notification extends BaseEntity {
   public readonly title: string;
   public readonly message: string;
   public readonly matchId: string | undefined;
+  public readonly playerName: string | undefined;
   public read: boolean;
 
   private constructor(
@@ -37,6 +40,7 @@ export class Notification extends BaseEntity {
     message: string,
     read: boolean,
     matchId: string | undefined,
+    playerName: string | undefined,
     createdAt: Date,
   ) {
     super(id, createdAt);
@@ -46,6 +50,7 @@ export class Notification extends BaseEntity {
     this.message = message;
     this.read = read;
     this.matchId = matchId;
+    this.playerName = playerName;
   }
 
   static create(params: NotificationCreateParams): Notification {
@@ -57,6 +62,7 @@ export class Notification extends BaseEntity {
       params.message,
       false,
       params.matchId,
+      params.playerName,
       new Date(),
     );
   }
@@ -70,6 +76,7 @@ export class Notification extends BaseEntity {
       params.message,
       params.read,
       params.matchId,
+      params.playerName,
       params.createdAt,
     );
   }

@@ -17,6 +17,7 @@ describe('Notification entity', () => {
       expect(notification.message).toBe('Se ha creado un nuevo partido');
       expect(notification.read).toBe(false);
       expect(notification.matchId).toBeUndefined();
+      expect(notification.playerName).toBeUndefined();
       expect(notification.id).toBeDefined();
       expect(notification.createdAt).toBeInstanceOf(Date);
     });
@@ -32,6 +33,18 @@ describe('Notification entity', () => {
 
       expect(notification.matchId).toBe('match-123');
     });
+
+    it('crea notificación con playerName opcional', () => {
+      const notification = Notification.create({
+        userId: 'user-1',
+        type: NotificationType.create('player_joined'),
+        title: 'Jugador unido',
+        message: 'Juan se ha unido',
+        playerName: 'Juan',
+      });
+
+      expect(notification.playerName).toBe('Juan');
+    });
   });
 
   describe('reconstitute', () => {
@@ -44,6 +57,7 @@ describe('Notification entity', () => {
         message: 'El partido ha sido cancelado',
         read: true,
         matchId: 'match-1',
+        playerName: 'Carlos',
         createdAt: new Date('2024-01-01'),
       });
 
@@ -51,6 +65,7 @@ describe('Notification entity', () => {
       expect(notification.userId).toBe('user-1');
       expect(notification.read).toBe(true);
       expect(notification.matchId).toBe('match-1');
+      expect(notification.playerName).toBe('Carlos');
     });
 
     it('reconstruye sin matchId opcional', () => {
@@ -62,10 +77,12 @@ describe('Notification entity', () => {
         message: 'El resultado del partido ha sido confirmado',
         read: false,
         matchId: undefined,
+        playerName: undefined,
         createdAt: new Date('2024-06-01'),
       });
 
       expect(notification.matchId).toBeUndefined();
+      expect(notification.playerName).toBeUndefined();
     });
   });
 
@@ -92,6 +109,7 @@ describe('Notification entity', () => {
         message: 'Mensaje',
         read: true,
         matchId: undefined,
+        playerName: undefined,
         createdAt: new Date(),
       });
 

@@ -6,5 +6,6 @@ export interface NotificationResponseDTO {
   message: string;
   read: boolean;
   matchId: string | undefined;
+  playerName: string | undefined;
   createdAt: string;
 }
