@@ -18,7 +18,7 @@ export class NotificationServiceImpl implements INotificationService {
       title: 'Nuevo jugador',
       message: `${playerName} se ha unido a tu partido`,
       matchId,
-      playerId,
+      ...(playerId !== undefined ? { playerId } : {}),
       playerName,
     });
   }
