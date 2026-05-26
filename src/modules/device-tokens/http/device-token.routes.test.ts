@@ -18,7 +18,7 @@ function createMockRepo(): jest.Mocked<IDeviceTokenRepository> {
 }
 
 function generateToken(userId: string): string {
-  return jwt.sign({ userId, email: `${userId}@test.com` }, env.JWT_ACCESS_SECRET, {
+  return jwt.sign({ userId, email: `${userId}@test.com`, name: 'Test User' }, env.JWT_ACCESS_SECRET, {
     expiresIn: '15m',
   });
 }

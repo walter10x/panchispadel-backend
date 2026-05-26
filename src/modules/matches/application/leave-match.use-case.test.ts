@@ -56,13 +56,13 @@ describe('LeaveMatchUseCase', () => {
       title: 'Test Match',
       maxPlayers: 3,
     });
-    match.join('user-2', 'user-2@test.com');
+    match.join('user-2', 'User 2');
     repository.findById.mockResolvedValue(match);
 
     const result = await useCase.execute(
       { matchId: match.id },
       'user-2',
-      'user-2@test.com',
+      'User 2',
     );
 
     expect(repository.save).toHaveBeenCalledTimes(1);
@@ -71,7 +71,7 @@ describe('LeaveMatchUseCase', () => {
     expect(notifService.notifyPlayerLeft).toHaveBeenCalledWith(
       match.id,
       'user-1',
-      'user-2@test.com',
+      'User 2',
     );
   });
 
@@ -82,7 +82,7 @@ describe('LeaveMatchUseCase', () => {
       useCase.execute(
         { matchId: 'no-existe' },
         'user-2',
-        'user-2@test.com',
+        'User 2',
       ),
     ).rejects.toThrow(NotFoundError);
     expect(repository.save).not.toHaveBeenCalled();

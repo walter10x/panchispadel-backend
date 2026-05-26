@@ -61,7 +61,7 @@ export class MatchController {
       const result = await this.joinMatchUseCase.execute(
         { matchId: req.params['matchId']! },
         req.user!.userId,
-        req.user!.email,
+        req.user!.name,
       );
 
       res.json(result);
@@ -79,7 +79,7 @@ export class MatchController {
       const result = await this.leaveMatchUseCase.execute(
         { matchId: req.params['matchId']! },
         req.user!.userId,
-        req.user!.email,
+        req.user!.name,
       );
 
       res.json(result);
@@ -97,7 +97,7 @@ export class MatchController {
       const result = await this.cancelMatchUseCase.execute(
         { matchId: req.params['matchId']! },
         req.user!.userId,
-        req.user!.email,
+        req.user!.name,
       );
 
       res.json(result);

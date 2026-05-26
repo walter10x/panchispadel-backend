@@ -9,12 +9,13 @@ function signToken(payload: Record<string, unknown>, options?: jwt.SignOptions):
 
 describe('verifyWsToken', () => {
   it('returns userId and email for a valid JWT', () => {
-    const token = signToken({ userId: 'user-1', email: 'test@example.com' });
+    const token = signToken({ userId: 'user-1', email: 'test@example.com', name: 'Test User' });
     const result = verifyWsToken(token);
 
     expect(result).not.toBeNull();
     expect(result!.userId).toBe('user-1');
     expect(result!.email).toBe('test@example.com');
+    expect(result!.name).toBe('Test User');
   });
 
   it('returns null when no token is provided', () => {
@@ -35,19 +36,19 @@ describe('verifyWsToken', () => {
   });
 
   it('returns null when token payload is missing email', () => {
-    const token = signToken({ userId: 'user-1' });
+    const token = signToken({ userId: 'user-1', name: 'Test User' });
     expect(verifyWsToken(token)).toBeNull();
   });
 
   it('returns null for an expired token', () => {
-    const token = signToken({ userId: 'user-1', email: 'test@example.com' }, { expiresIn: '0s' });
+    const token = signToken({ userId: 'user-1', email: 'test@example.com', name: 'Test User' }, { expiresIn: '0s' });
     // Wait a bit to ensure expiration
     expect(verifyWsToken(token)).toBeNull();
   });
 
   it('returns null when JWT_ACCESS_SECRET does not match', () => {
     const token = jwt.sign(
-      { userId: 'user-1', email: 'test@example.com' },
+      { userId: 'user-1', email: 'test@example.com', name: 'Test User' },
       'different-secret',
     );
     expect(verifyWsToken(token)).toBeNull();

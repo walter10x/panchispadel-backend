@@ -304,6 +304,7 @@ describe('SocketIoGateway', () => {
       asMock(verifyWsToken).mockReturnValue({
         userId: 'u-1',
         email: 'test@example.com',
+        name: 'Test User',
       });
 
       const middleware = getMiddleware();

@@ -100,15 +100,17 @@ describe('LoginUserUseCase', () => {
     const accessPayload = jwt.verify(
       result.accessToken,
       env.JWT_ACCESS_SECRET,
-    ) as { userId: string; email: string };
+    ) as { userId: string; email: string; name: string };
     expect(accessPayload.userId).toBe(user.id);
     expect(accessPayload.email).toBe('token@example.com');
+    expect(accessPayload.name).toBe('Test User');
 
     const refreshPayload = jwt.verify(
       result.refreshToken,
       env.JWT_REFRESH_SECRET,
-    ) as { userId: string; email: string };
+    ) as { userId: string; email: string; name: string };
     expect(refreshPayload.userId).toBe(user.id);
+    expect(refreshPayload.name).toBe('Test User');
   });
 
   it('devuelve mensaje genérico para email no encontrado', async () => {

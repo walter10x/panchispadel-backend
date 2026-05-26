@@ -5,6 +5,7 @@ import { env } from '../../../config/env';
 export interface WsAuthResult {
   userId: string;
   email: string;
+  name: string;
 }
 
 /**
@@ -26,6 +27,7 @@ export function verifyWsToken(token: string | undefined): WsAuthResult | null {
     return {
       userId: payload.userId,
       email: payload.email,
+      name: payload.name ?? '',
     };
   } catch {
     return null;

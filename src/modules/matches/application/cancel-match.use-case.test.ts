@@ -55,14 +55,14 @@ describe('CancelMatchUseCase', () => {
       dateTime: FUTURE_DATE,
       title: 'Test Match',
     });
-    match.join('user-2', 'user-2@test.com');
-    match.join('user-3', 'user-3@test.com');
+    match.join('user-2', 'User 2');
+    match.join('user-3', 'User 3');
     repository.findById.mockResolvedValue(match);
 
     const result = await useCase.execute(
       { matchId: match.id },
       'user-1',
-      'user-1@test.com',
+      'User 1',
     );
 
     expect(repository.save).toHaveBeenCalledTimes(1);
@@ -70,7 +70,7 @@ describe('CancelMatchUseCase', () => {
     expect(notifService.notifyMatchCancelled).toHaveBeenCalledWith(
       match.id,
       ['user-2', 'user-3'],
-      'user-1@test.com',
+      'User 1',
     );
   });
 
@@ -81,7 +81,7 @@ describe('CancelMatchUseCase', () => {
       useCase.execute(
         { matchId: 'no-existe' },
         'user-1',
-        'user-1@test.com',
+        'User 1',
       ),
     ).rejects.toThrow(NotFoundError);
     expect(repository.save).not.toHaveBeenCalled();
@@ -101,7 +101,7 @@ describe('CancelMatchUseCase', () => {
     await useCase.execute(
       { matchId: match.id },
       'user-1',
-      'user-1@test.com',
+      'User 1',
     );
 
     expect(notifService.notifyMatchCancelled).not.toHaveBeenCalled();

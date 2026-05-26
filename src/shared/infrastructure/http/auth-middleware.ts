@@ -6,6 +6,7 @@ import { UnauthorizedError } from '../../domain/errors';
 export interface JwtPayload {
   userId: string;
   email: string;
+  name: string;
 }
 
 declare global {

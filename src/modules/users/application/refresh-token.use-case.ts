@@ -23,6 +23,7 @@ export class RefreshTokenUseCase {
     try {
       const payload = jwt.verify(refreshToken, env.JWT_REFRESH_SECRET) as {
         userId: string;
+        name?: string;
       };
 
       const user = await this.userRepository.findById(payload.userId);
@@ -31,7 +32,8 @@ export class RefreshTokenUseCase {
       }
 
       const email = user.email.toString();
-      const newPayload = { userId: user.id, email };
+      const name = (payload as Record<string, unknown>).name ?? user.name;
+      const newPayload = { userId: user.id, email, name: name as string };
 
       const newAccessToken = jwt.sign(newPayload, env.JWT_ACCESS_SECRET, {
         expiresIn: parseSeconds(env.JWT_ACCESS_EXPIRES_IN),

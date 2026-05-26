@@ -43,7 +43,7 @@ export class RegisterUserUseCase {
     await this.userRepository.save(user);
 
     const email = user.email.toString();
-    const payload = { userId: user.id, email };
+    const payload = { userId: user.id, email, name: user.name };
 
     const accessToken = jwt.sign(payload, env.JWT_ACCESS_SECRET, {
       expiresIn: parseSeconds(env.JWT_ACCESS_EXPIRES_IN),
