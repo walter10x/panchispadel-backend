@@ -12,7 +12,7 @@ export class MatchOrmEntity {
   @Column({ type: 'uuid' })
   creatorId!: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, default: '' })
   creatorEmail!: string;
 
   @Column({ type: 'uuid' })
