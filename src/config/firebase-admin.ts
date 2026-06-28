@@ -2,15 +2,31 @@ import admin from 'firebase-admin';
 import { IDeviceTokenRepository } from '../modules/device-tokens/domain/device-token.repository';
 import { IPushNotificationService } from '../modules/device-tokens/domain/push-notification-service';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const serviceAccount = require('./firebase-service-account.json');
-
 let initialized = false;
+
+function loadServiceAccount(): Record<string, unknown> {
+  // 1. Intentar desde variable de entorno (Dokploy/producción)
+  const envJson = process.env['FIREBASE_SERVICE_ACCOUNT_JSON'];
+  if (envJson) {
+    return JSON.parse(envJson);
+  }
+
+  // 2. Intentar desde archivo local (desarrollo)
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    return require('./firebase-service-account.json');
+  } catch {
+    throw new Error(
+      'Firebase: ni FIREBASE_SERVICE_ACCOUNT_JSON ni firebase-service-account.json encontrados',
+    );
+  }
+}
 
 function ensureInitialized(): void {
   if (!initialized) {
+    const serviceAccount = loadServiceAccount();
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
+      credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
     });
     initialized = true;
   }
