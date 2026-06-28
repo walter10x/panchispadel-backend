@@ -5,7 +5,19 @@ import { IPushNotificationService } from '../modules/device-tokens/domain/push-n
 let initialized = false;
 
 function loadServiceAccount(): Record<string, unknown> | null {
-  // 1. Intentar desde variable de entorno (Dokploy/producción)
+  // 1. Intentar desde base64 (Dokploy — más fiable)
+  const b64 = process.env['FIREBASE_SERVICE_ACCOUNT_BASE64'];
+  if (b64) {
+    try {
+      const json = Buffer.from(b64, 'base64').toString('utf-8');
+      return JSON.parse(json);
+    } catch (e) {
+      console.error('[Firebase] Error decodificando FIREBASE_SERVICE_ACCOUNT_BASE64:', e);
+      return null;
+    }
+  }
+
+  // 2. Intentar desde variable JSON (Dokploy alternativo)
   const envJson = process.env['FIREBASE_SERVICE_ACCOUNT_JSON'];
   if (envJson) {
     try {
@@ -16,7 +28,7 @@ function loadServiceAccount(): Record<string, unknown> | null {
     }
   }
 
-  // 2. Intentar desde archivo local (desarrollo)
+  // 3. Intentar desde archivo local (desarrollo)
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     return require('./firebase-service-account.json');
