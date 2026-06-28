@@ -47,7 +47,7 @@ describe('ConfirmPlayerUseCase', () => {
     useCase = new ConfirmPlayerUseCase(repository, notifService, wsGateway);
   });
 
-  it('confirma jugador pendiente y notifica con email como nombre', async () => {
+  it('confirma jugador pendiente y notifica con displayName como nombre', async () => {
     const match = Match.create({
       creatorId: 'creator-1',
       creatorEmail: 'creator@test.com',
@@ -56,7 +56,7 @@ describe('ConfirmPlayerUseCase', () => {
       title: 'Test Match',
       maxPlayers: 3,
     });
-    match.join('player-2', 'player2@test.com');
+    match.join('player-2', 'player2@test.com', 'Player Two');
     repository.findById.mockResolvedValue(match);
 
     const result = await useCase.execute(match.id, 'creator-1', 'player-2');
@@ -65,13 +65,13 @@ describe('ConfirmPlayerUseCase', () => {
     expect(notifService.notifyPlayerConfirmed).toHaveBeenCalledWith(
       match.id,
       'player-2',
-      'player2@test.com',
+      'Player Two',
       ['creator-1'],
     );
     expect(wsGateway.emitToUser).toHaveBeenCalledWith(
       'player-2',
       'match:player_confirmed',
-      expect.objectContaining({ userId: 'player-2', userName: 'player2@test.com' }),
+      expect.objectContaining({ userId: 'player-2', userName: 'Player Two' }),
     );
     expect(result.players).toHaveLength(2);
   });
@@ -94,7 +94,7 @@ describe('ConfirmPlayerUseCase', () => {
       dateTime: FUTURE_DATE,
       title: 'Test Match',
     });
-    match.join('player-2', 'player2@test.com');
+    match.join('player-2', 'player2@test.com', 'Player Two');
     repository.findById.mockResolvedValue(match);
 
     await expect(
@@ -112,9 +112,9 @@ describe('ConfirmPlayerUseCase', () => {
       title: 'Test Match',
       maxPlayers: 4,
     });
-    match.join('player-2', 'player2@test.com');
+    match.join('player-2', 'player2@test.com', 'Player Two');
     match.confirmPlayer('player-2');
-    match.join('player-3', 'player3@test.com');
+    match.join('player-3', 'player3@test.com', 'Player Three');
     repository.findById.mockResolvedValue(match);
 
     await useCase.execute(match.id, 'creator-1', 'player-3');
@@ -122,7 +122,7 @@ describe('ConfirmPlayerUseCase', () => {
     expect(notifService.notifyPlayerConfirmed).toHaveBeenCalledWith(
       match.id,
       'player-3',
-      'player3@test.com',
+      'Player Three',
       ['creator-1', 'player-2'],
     );
   });

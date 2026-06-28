@@ -47,7 +47,7 @@ describe('RejectPlayerUseCase', () => {
     useCase = new RejectPlayerUseCase(repository, notifService, wsGateway);
   });
 
-  it('rechaza jugador pendiente y notifica con email como nombre', async () => {
+  it('rechaza jugador pendiente y notifica con displayName como nombre', async () => {
     const match = Match.create({
       creatorId: 'creator-1',
       creatorEmail: 'creator@test.com',
@@ -56,7 +56,7 @@ describe('RejectPlayerUseCase', () => {
       title: 'Test Match',
       maxPlayers: 3,
     });
-    match.join('player-2', 'player2@test.com');
+    match.join('player-2', 'player2@test.com', 'Player Two');
     repository.findById.mockResolvedValue(match);
 
     const result = await useCase.execute(match.id, 'creator-1', 'player-2');
@@ -65,12 +65,12 @@ describe('RejectPlayerUseCase', () => {
     expect(notifService.notifyPlayerRejected).toHaveBeenCalledWith(
       match.id,
       'player-2',
-      'player2@test.com',
+      'Player Two',
     );
     expect(wsGateway.emitToUser).toHaveBeenCalledWith(
       'player-2',
       'match:player_rejected',
-      expect.objectContaining({ userId: 'player-2', userName: 'player2@test.com' }),
+      expect.objectContaining({ userId: 'player-2', userName: 'Player Two' }),
     );
     expect(result.players).toHaveLength(1);
   });
@@ -93,7 +93,7 @@ describe('RejectPlayerUseCase', () => {
       dateTime: FUTURE_DATE,
       title: 'Test Match',
     });
-    match.join('player-2', 'player2@test.com');
+    match.join('player-2', 'player2@test.com', 'Player Two');
     repository.findById.mockResolvedValue(match);
 
     await expect(

@@ -28,7 +28,7 @@ export class ConfirmPlayerUseCase {
     }
 
     const player = match.players.find((p) => p.playerId === playerId);
-    const playerName = player?.email ?? playerId;
+    const playerName = player?.displayName || player?.email || playerId;
 
     match.confirmPlayer(playerId);
     await this.matchRepository.save(match);

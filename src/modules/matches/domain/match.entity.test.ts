@@ -196,9 +196,11 @@ describe('Match entity', () => {
         maxPlayers: 2,
       });
 
-      match.join('user-2', 'user-2@test.com');
+      match.join('user-2', 'user-2@test.com', 'User 2');
       expect(match.players).toHaveLength(2);
       expect(match.players[1]?.playerId).toBe('user-2');
+      expect(match.players[1]?.email).toBe('user-2@test.com');
+      expect(match.players[1]?.displayName).toBe('User 2');
       expect(match.players[1]?.status).toBe('pendiente');
     });
 
@@ -212,8 +214,8 @@ describe('Match entity', () => {
         maxPlayers: 2,
       });
 
-      match.join('user-2', 'user-2@test.com');
-      expect(() => match.join('user-3', 'user-3@test.com')).toThrow('Match está lleno');
+      match.join('user-2', 'user-2@test.com', 'User 2');
+      expect(() => match.join('user-3', 'user-3@test.com', 'User 3')).toThrow('Match está lleno');
     });
 
     it('lanza error si el jugador ya está en el match', () => {
@@ -225,7 +227,7 @@ describe('Match entity', () => {
         title: MATCH_TITLE,
       });
 
-      expect(() => match.join('user-1', 'user-1@test.com')).toThrow(
+      expect(() => match.join('user-1', 'user-1@test.com', 'User 1')).toThrow(
         'El jugador ya está en el match',
       );
     });
@@ -240,7 +242,7 @@ describe('Match entity', () => {
       });
 
       match.cancel('user-1');
-      expect(() => match.join('user-2', 'user-2@test.com')).toThrow(
+      expect(() => match.join('user-2', 'user-2@test.com', 'User 2')).toThrow(
         'Match no está abierto para nuevos jugadores',
       );
     });
@@ -255,13 +257,13 @@ describe('Match entity', () => {
         maxPlayers: 2,
       });
 
-      match.join('user-2', 'user-2@test.com');
+      match.join('user-2', 'user-2@test.com', 'User 2');
       expect(match.status.getValue()).toBe('lleno');
     });
   });
 
   describe('confirmPlayer', () => {
-    it('confirma un jugador pendiente', () => {
+    it('confirma un jugador pendiente y preserva displayName', () => {
       const match = Match.create({
         creatorId: 'user-1',
         creatorEmail: 'creator@test.com',
@@ -271,9 +273,11 @@ describe('Match entity', () => {
         maxPlayers: 3,
       });
 
-      match.join('user-2', 'user-2@test.com');
+      match.join('user-2', 'user-2@test.com', 'User 2');
       match.confirmPlayer('user-2');
       expect(match.players[1]?.status).toBe('confirmado');
+      expect(match.players[1]?.displayName).toBe('User 2');
+      expect(match.players[1]?.email).toBe('user-2@test.com');
     });
 
     it('lanza error si el jugador no existe', () => {
@@ -313,7 +317,7 @@ describe('Match entity', () => {
         title: MATCH_TITLE,
       });
 
-      match.join('user-2', 'user-2@test.com');
+      match.join('user-2', 'user-2@test.com', 'User 2');
       match.cancel('user-1');
       expect(() => match.confirmPlayer('user-2')).toThrow(
         'El match no está activo',
@@ -330,7 +334,7 @@ describe('Match entity', () => {
         maxPlayers: 2,
       });
 
-      match.join('user-2', 'user-2@test.com');
+      match.join('user-2', 'user-2@test.com', 'User 2');
       match.confirmPlayer('user-2');
       expect(match.status.getValue()).toBe('lleno');
     });
@@ -347,7 +351,7 @@ describe('Match entity', () => {
         maxPlayers: 2,
       });
 
-      match.join('user-2', 'user-2@test.com');
+      match.join('user-2', 'user-2@test.com', 'User 2');
       expect(match.players).toHaveLength(2);
 
       match.rejectPlayer('user-2');
@@ -395,7 +399,7 @@ describe('Match entity', () => {
         maxPlayers: 3,
       });
 
-      match.join('user-2', 'user-2@test.com');
+      match.join('user-2', 'user-2@test.com', 'User 2');
       match.leave('user-2');
       expect(match.players).toHaveLength(1);
       expect(match.players[0]?.playerId).toBe('user-1');
@@ -439,7 +443,7 @@ describe('Match entity', () => {
         maxPlayers: 2,
       });
 
-      match.join('user-2', 'user-2@test.com');
+      match.join('user-2', 'user-2@test.com', 'User 2');
       expect(match.status.getValue()).toBe('lleno');
 
       match.leave('user-2');
@@ -515,7 +519,7 @@ describe('Match entity', () => {
         maxPlayers: 2,
       });
 
-      match.join('user-2', 'user-2@test.com');
+      match.join('user-2', 'user-2@test.com', 'User 2');
       expect(match.isFull).toBe(false);
 
       match.confirmPlayer('user-2');
@@ -532,7 +536,7 @@ describe('Match entity', () => {
         maxPlayers: 2,
       });
 
-      match.join('user-2', 'user-2@test.com');
+      match.join('user-2', 'user-2@test.com', 'User 2');
       expect(match.isFull).toBe(false);
     });
   });

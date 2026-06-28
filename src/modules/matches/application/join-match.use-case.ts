@@ -18,6 +18,7 @@ export class JoinMatchUseCase {
   async execute(
     dto: JoinMatchDTO,
     playerId: string,
+    playerEmail: string,
     playerName: string,
   ): Promise<MatchResponseDTO> {
     const match = await this.matchRepository.findById(dto.matchId);
@@ -27,7 +28,7 @@ export class JoinMatchUseCase {
     }
 
     const wasFull = match.isFull;
-    match.join(playerId, playerName);
+    match.join(playerId, playerEmail, playerName);
     await this.matchRepository.save(match);
 
     if (match.creatorId !== playerId) {

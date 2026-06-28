@@ -19,10 +19,12 @@ export class CreateMatchUseCase {
     dto: CreateMatchDTO,
     creatorId: string,
     creatorEmail: string,
+    creatorName: string = '',
   ): Promise<MatchResponseDTO> {
     const match = Match.create({
       creatorId,
       creatorEmail,
+      creatorName,
       clubId: dto.clubId,
       dateTime: dto.dateTime,
       title: dto.title,

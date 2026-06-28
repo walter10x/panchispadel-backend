@@ -55,8 +55,8 @@ describe('CancelMatchUseCase', () => {
       dateTime: FUTURE_DATE,
       title: 'Test Match',
     });
-    match.join('user-2', 'User 2');
-    match.join('user-3', 'User 3');
+    match.join('user-2', 'user2@test.com', 'User 2');
+    match.join('user-3', 'user3@test.com', 'User 3');
     repository.findById.mockResolvedValue(match);
 
     const result = await useCase.execute(

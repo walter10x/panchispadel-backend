@@ -2,6 +2,7 @@ export interface MatchResponseDTO {
   id: string;
   creatorId: string;
   creatorEmail: string;
+  creatorName?: string;
   clubId: string;
   dateTime: string;
   title: string;
@@ -9,6 +10,6 @@ export interface MatchResponseDTO {
   status: string;
   maxPlayers: number;
   level: string;
-  players: Array<{ playerId: string; email: string; status: string }>;
+  players: Array<{ playerId: string; email: string; displayName: string; status: string }>;
   createdAt: string;
 }

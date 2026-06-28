@@ -6,8 +6,14 @@ describe('PlayerSlot value object', () => {
       const slot = PlayerSlot.create('player-1', 'player-1@test.com');
       expect(slot.playerId).toBe('player-1');
       expect(slot.email).toBe('player-1@test.com');
+      expect(slot.displayName).toBe('');
       expect(slot.status).toBe('confirmado');
       expect(slot.joinedAt).toBeInstanceOf(Date);
+    });
+
+    it('acepta displayName opcional', () => {
+      const slot = PlayerSlot.create('player-1', 'player-1@test.com', 'Player Uno');
+      expect(slot.displayName).toBe('Player Uno');
     });
   });
 
@@ -16,12 +22,18 @@ describe('PlayerSlot value object', () => {
       const slot = PlayerSlot.createWithStatus('player-2', 'pendiente', 'player-2@test.com');
       expect(slot.playerId).toBe('player-2');
       expect(slot.email).toBe('player-2@test.com');
+      expect(slot.displayName).toBe('');
       expect(slot.status).toBe('pendiente');
     });
 
     it('crea PlayerSlot con estado rechazado', () => {
       const slot = PlayerSlot.createWithStatus('player-3', 'rechazado', 'player-3@test.com');
       expect(slot.status).toBe('rechazado');
+    });
+
+    it('acepta displayName opcional', () => {
+      const slot = PlayerSlot.createWithStatus('player-5', 'pendiente', 'p5@test.com', 'Player 5');
+      expect(slot.displayName).toBe('Player 5');
     });
 
     it('lanza error para estado inválido', () => {
@@ -42,8 +54,21 @@ describe('PlayerSlot value object', () => {
       });
       expect(slot.playerId).toBe('player-1');
       expect(slot.email).toBe('player-1@test.com');
+      expect(slot.displayName).toBe('');
       expect(slot.status).toBe('pendiente');
       expect(slot.joinedAt).toBe(date);
+    });
+
+    it('reconstruye con displayName cuando existe', () => {
+      const date = new Date('2024-06-01T10:00:00Z');
+      const slot = PlayerSlot.reconstitute({
+        playerId: 'player-1',
+        email: 'player-1@test.com',
+        displayName: 'Player Uno',
+        status: 'pendiente',
+        joinedAt: date,
+      } as any);
+      expect(slot.displayName).toBe('Player Uno');
     });
   });
 
@@ -79,6 +104,7 @@ describe('PlayerSlot value object', () => {
       expect(plain).toEqual({
         playerId: 'player-1',
         email: 'player-1@test.com',
+        displayName: '',
         status: 'confirmado',
         joinedAt: expect.any(String),
       });
@@ -87,9 +113,10 @@ describe('PlayerSlot value object', () => {
 
   describe('toString', () => {
     it('devuelve representación en string', () => {
-      const slot = PlayerSlot.create('p1', 'p1@test.com');
+      const slot = PlayerSlot.create('p1', 'p1@test.com', 'Player One');
       expect(slot.toString()).toContain('p1');
       expect(slot.toString()).toContain('p1@test.com');
+      expect(slot.toString()).toContain('Player One');
       expect(slot.toString()).toContain('confirmado');
     });
   });

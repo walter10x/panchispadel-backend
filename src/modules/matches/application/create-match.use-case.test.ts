@@ -55,7 +55,7 @@ describe('CreateMatchUseCase', () => {
       maxPlayers: 3,
     };
 
-    const result = await useCase.execute(dto, 'user-1', 'user-1@test.com');
+    const result = await useCase.execute(dto, 'user-1', 'user-1@test.com', 'User One');
 
     expect(repository.save).toHaveBeenCalledTimes(1);
     const savedMatch = repository.save.mock.calls[0]?.[0] as Match;
@@ -68,6 +68,7 @@ describe('CreateMatchUseCase', () => {
     expect(savedMatch.players).toHaveLength(1);
     expect(savedMatch.players[0]?.playerId).toBe('user-1');
     expect(savedMatch.players[0]?.email).toBe('user-1@test.com');
+    expect(savedMatch.players[0]?.displayName).toBe('User One');
 
     expect(savedMatch.level).toBe('medio');
 
@@ -75,6 +76,7 @@ describe('CreateMatchUseCase', () => {
       id: savedMatch.id,
       creatorId: 'user-1',
       creatorEmail: 'user-1@test.com',
+      creatorName: 'User One',
       clubId: 'club-1',
       dateTime: FUTURE_DATE.toISOString(),
       title: 'Partido de prueba',
@@ -82,7 +84,7 @@ describe('CreateMatchUseCase', () => {
       status: 'abierto',
       maxPlayers: 3,
       level: 'medio',
-      players: [{ playerId: 'user-1', email: 'user-1@test.com', status: 'confirmado' }],
+      players: [{ playerId: 'user-1', email: 'user-1@test.com', displayName: 'User One', status: 'confirmado' }],
       createdAt: savedMatch.createdAt.toISOString(),
     });
 
@@ -99,7 +101,7 @@ describe('CreateMatchUseCase', () => {
       title: 'Partido con defaults',
     };
 
-    const result = await useCase.execute(dto, 'user-1', 'user-1@test.com');
+    const result = await useCase.execute(dto, 'user-1', 'user-1@test.com', 'User One');
 
     expect(result.durationMinutes).toBe(90);
     expect(result.maxPlayers).toBe(4);
@@ -114,7 +116,7 @@ describe('CreateMatchUseCase', () => {
       level: 'pro',
     };
 
-    const result = await useCase.execute(dto, 'user-1', 'user-1@test.com');
+    const result = await useCase.execute(dto, 'user-1', 'user-1@test.com', 'User One');
 
     expect(result.level).toBe('pro');
   });

@@ -44,6 +44,7 @@ export class MatchController {
         dto,
         req.user!.userId,
         req.user!.email,
+        req.user!.name,
       );
 
       res.status(201).json(result);
@@ -61,6 +62,7 @@ export class MatchController {
       const result = await this.joinMatchUseCase.execute(
         { matchId: req.params['matchId']! },
         req.user!.userId,
+        req.user!.email,
         req.user!.name,
       );
 

@@ -61,6 +61,7 @@ describe('JoinMatchUseCase', () => {
     const result = await useCase.execute(
       { matchId: match.id },
       'user-2',
+      'user2@test.com',
       'User 2',
     );
 
@@ -69,7 +70,8 @@ describe('JoinMatchUseCase', () => {
     expect(result.players).toHaveLength(2);
     expect(result.players[1]).toEqual({
       playerId: 'user-2',
-      email: 'User 2',
+      email: 'user2@test.com',
+      displayName: 'User 2',
       status: 'pendiente',
     });
     expect(notifService.notifyPlayerJoined).toHaveBeenCalledWith(
@@ -84,7 +86,7 @@ describe('JoinMatchUseCase', () => {
     repository.findById.mockResolvedValue(null);
 
     await expect(
-      useCase.execute({ matchId: 'no-existe' }, 'user-2', 'Player Name'),
+      useCase.execute({ matchId: 'no-existe' }, 'user-2', 'user2@test.com', 'Player Name'),
     ).rejects.toThrow(NotFoundError);
     expect(repository.save).not.toHaveBeenCalled();
     expect(notifService.notifyPlayerJoined).not.toHaveBeenCalled();
@@ -104,6 +106,7 @@ describe('JoinMatchUseCase', () => {
     await useCase.execute(
       { matchId: match.id },
       'user-2',
+      'user2@test.com',
       'User 2',
     );
 

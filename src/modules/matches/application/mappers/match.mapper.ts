@@ -9,6 +9,7 @@ export class MatchMapper {
       id: match.id,
       creatorId: match.creatorId,
       creatorEmail: match.creatorEmail,
+      creatorName: match.players[0]?.displayName ?? '',
       clubId: match.clubId,
       dateTime: match.dateTime.toISOString(),
       title: match.title,
@@ -19,6 +20,7 @@ export class MatchMapper {
       players: match.players.map((p) => ({
         playerId: p.playerId,
         email: p.email,
+        displayName: p.displayName,
         status: p.status,
       })),
       createdAt: match.createdAt.toISOString(),
@@ -61,12 +63,14 @@ export class MatchMapper {
       email: string;
       status: string;
       joinedAt: string;
+      displayName?: string;
     }> = JSON.parse(data.players);
 
     const players = parsedPlayers.map((p) =>
       PlayerSlot.reconstitute({
         playerId: p.playerId,
         email: p.email,
+        displayName: p.displayName ?? '',
         status: p.status as 'confirmado' | 'pendiente' | 'rechazado',
         joinedAt: new Date(p.joinedAt),
       }),

@@ -8,6 +8,7 @@ import { MatchLevel } from './value-objects/match-level';
 export interface MatchCreateParams {
   creatorId: string;
   creatorEmail: string;
+  creatorName?: string;
   clubId: string;
   dateTime: Date;
   title: string;
@@ -80,7 +81,7 @@ export class Match extends BaseEntity {
     validateMaxPlayers(maxPlayers);
     validateFutureDate(params.dateTime);
 
-    const players = [PlayerSlot.create(params.creatorId, params.creatorEmail)];
+    const players = [PlayerSlot.create(params.creatorId, params.creatorEmail, params.creatorName ?? '')];
 
     return new Match(
       uuid(),
@@ -130,7 +131,7 @@ export class Match extends BaseEntity {
     );
   }
 
-  join(playerId: string, email: string): void {
+  join(playerId: string, email: string, displayName: string): void {
     if (this._players.some((p) => p.playerId === playerId)) {
       throw new ValidationError('El jugador ya está en el match');
     }
@@ -147,7 +148,7 @@ export class Match extends BaseEntity {
 
     this._players = [
       ...this._players,
-      PlayerSlot.createWithStatus(playerId, 'pendiente', email),
+      PlayerSlot.createWithStatus(playerId, 'pendiente', email, displayName),
     ];
 
     if (this._players.length >= this.maxPlayers) {
@@ -173,7 +174,7 @@ export class Match extends BaseEntity {
     }
 
     const updated = [...this._players];
-    updated[index] = PlayerSlot.createWithStatus(playerId, 'confirmado', this._players[index]!.email);
+    updated[index] = PlayerSlot.createWithStatus(playerId, 'confirmado', this._players[index]!.email, this._players[index]!.displayName);
     this._players = updated;
 
     if (this._players.length >= this.maxPlayers) {
