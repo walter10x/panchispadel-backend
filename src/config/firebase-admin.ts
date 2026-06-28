@@ -4,11 +4,16 @@ import { IPushNotificationService } from '../modules/device-tokens/domain/push-n
 
 let initialized = false;
 
-function loadServiceAccount(): Record<string, unknown> {
+function loadServiceAccount(): Record<string, unknown> | null {
   // 1. Intentar desde variable de entorno (Dokploy/producción)
   const envJson = process.env['FIREBASE_SERVICE_ACCOUNT_JSON'];
   if (envJson) {
-    return JSON.parse(envJson);
+    try {
+      return JSON.parse(envJson);
+    } catch (e) {
+      console.error('[Firebase] Error parseando FIREBASE_SERVICE_ACCOUNT_JSON:', e);
+      return null;
+    }
   }
 
   // 2. Intentar desde archivo local (desarrollo)
@@ -16,18 +21,19 @@ function loadServiceAccount(): Record<string, unknown> {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     return require('./firebase-service-account.json');
   } catch {
-    throw new Error(
-      'Firebase: ni FIREBASE_SERVICE_ACCOUNT_JSON ni firebase-service-account.json encontrados',
-    );
+    console.warn('[Firebase] Sin credenciales — notificaciones push deshabilitadas');
+    return null;
   }
 }
 
 function ensureInitialized(): void {
   if (!initialized) {
     const serviceAccount = loadServiceAccount();
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-    });
+    if (serviceAccount) {
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+      });
+    }
     initialized = true;
   }
 }
