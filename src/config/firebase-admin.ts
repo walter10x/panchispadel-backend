@@ -49,6 +49,11 @@ export class FirebaseAdminService implements IPushNotificationService {
   ): Promise<void> {
     ensureInitialized();
 
+    if (admin.apps.length === 0) {
+      console.log('[Firebase] Sin inicializar — omitiendo push');
+      return;
+    }
+
     const deviceTokens = await this.tokenRepo.findByUser(userId);
 
     if (deviceTokens.length === 0) {
