@@ -21,7 +21,7 @@ export class MatchOrmEntity {
   @Column({ type: 'timestamp' })
   dateTime!: Date;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, default: '' })
   title!: string;
 
   @Column({ type: 'int', default: 90 })
