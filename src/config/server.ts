@@ -4,10 +4,17 @@ import { env } from './env';
 import { initializeDatabase } from './database';
 import { registerRoutes } from './register-routes';
 import { SocketIoGateway } from '../modules/websocket/infrastructure/socket-io-gateway';
+import { seedAdmin } from './seeds/admin-seed';
 
 async function start(): Promise<void> {
   try {
     await initializeDatabase();
+
+    try {
+      await seedAdmin();
+    } catch (seedError) {
+      console.error('[seed] admin seed falló (el server sigue):', seedError);
+    }
 
     // Create HTTP server from Express app (required by Socket.IO)
     const httpServer = http.createServer(app);
