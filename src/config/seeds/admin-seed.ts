@@ -4,8 +4,14 @@ import { AppDataSource } from '../database';
 /**
  * Promueve a admin el email definido en ADMIN_EMAIL (si existe el usuario).
  * Si ADMIN_PASSWORD está definido, también resetea la contraseña.
+ * Asegura la columna role por si la BD de prod quedó sin ella.
  */
 export async function seedAdmin(): Promise<void> {
+  await AppDataSource.query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS role varchar(20) NOT NULL DEFAULT 'player'
+  `);
+
   const email = process.env['ADMIN_EMAIL'];
   if (!email) {
     console.log('[seed] ADMIN_EMAIL no definido — omitiendo promo a admin');
