@@ -35,5 +35,5 @@ ENV PORT=3000
 
 EXPOSE 3000
 
-# Comando para iniciar la aplicación
-CMD ["npm", "run", "start"]
+# Seed (admin/clubs) y luego API
+CMD ["sh", "-c", "node dist/config/seeds/index.js && exec node dist/config/server.js"]

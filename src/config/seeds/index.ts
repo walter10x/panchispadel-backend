@@ -10,4 +10,9 @@ async function runSeeds(): Promise<void> {
   console.log('Seeds completed');
 }
 
-runSeeds().catch(console.error);
+runSeeds()
+  .then(() => process.exit(0))
+  .catch((err: unknown) => {
+    console.error('[seed] ERROR', err);
+    process.exit(1);
+  });
