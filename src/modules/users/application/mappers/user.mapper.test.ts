@@ -20,6 +20,7 @@ describe('UserMapper', () => {
       expect(dto.email).toBe('test@example.com');
       expect(dto.name).toBe('Test User');
       expect(dto.level).toBe('medio');
+      expect(dto.role).toBe('player');
       expect(dto.createdAt).toBe(user.createdAt);
     });
 
@@ -76,6 +77,7 @@ describe('UserMapper', () => {
       expect(orm.passwordHash).toBe(user.passwordHash);
       expect(orm.name).toBe('Test User');
       expect(orm.level).toBe('medio');
+      expect(orm.role).toBe('player');
       expect(orm.photoUrl).toBeNull();
       expect(orm.phone).toBeNull();
       expect(orm.createdAt).toBe(user.createdAt);
@@ -106,6 +108,7 @@ describe('UserMapper', () => {
       orm.passwordHash = '$2a$10$hashed';
       orm.name = 'Domain User';
       orm.level = 'avanzado';
+      orm.role = 'admin';
       orm.photoUrl = 'https://example.com/photo.jpg';
       orm.phone = '+541111111111';
       orm.createdAt = createdAt;
@@ -117,6 +120,7 @@ describe('UserMapper', () => {
       expect(domain.passwordHash).toBe('$2a$10$hashed');
       expect(domain.name).toBe('Domain User');
       expect(domain.level.toString()).toBe('avanzado');
+      expect(domain.role.toString()).toBe('admin');
       expect(domain.photoUrl).toBe('https://example.com/photo.jpg');
       expect(domain.phone).toBe('+541111111111');
       expect(domain.createdAt).toEqual(createdAt);
@@ -129,6 +133,7 @@ describe('UserMapper', () => {
       orm.passwordHash = 'hash';
       orm.name = 'Test';
       orm.level = 'principiante';
+      orm.role = 'player';
       orm.photoUrl = null;
       orm.phone = null;
       orm.createdAt = new Date();

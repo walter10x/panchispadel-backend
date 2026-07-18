@@ -6,12 +6,12 @@ import { CancelMatchUseCase } from '../application/cancel-match.use-case';
 import { ListMatchesUseCase } from '../application/list-matches.use-case';
 import { ConfirmPlayerUseCase } from '../application/confirm-player.use-case';
 import { RejectPlayerUseCase } from '../application/reject-player.use-case';
+import { GetMatchUseCase } from '../application/get-match.use-case';
+import { UpdateMatchUseCase } from '../application/update-match.use-case';
+import { DeleteMatchUseCase } from '../application/delete-match.use-case';
 import { CreateMatchDTO } from '../application/dtos/create-match.dto';
 import { ListMatchesDTO } from '../application/dtos/list-matches.dto';
-import { IMatchRepository } from '../domain/match.repository';
-import { Match } from '../domain/match.entity';
-import { MatchMapper } from '../application/mappers/match.mapper';
-import { NotFoundError, ValidationError } from '../../../shared/domain/errors';
+import { UpdateMatchDTO } from '../application/dtos/update-match.dto';
 
 export class MatchController {
   constructor(
@@ -22,7 +22,9 @@ export class MatchController {
     private readonly listMatchesUseCase: ListMatchesUseCase,
     private readonly confirmPlayerUseCase: ConfirmPlayerUseCase,
     private readonly rejectPlayerUseCase: RejectPlayerUseCase,
-    private readonly matchRepository: IMatchRepository,
+    private readonly getMatchUseCase: GetMatchUseCase,
+    private readonly updateMatchUseCase: UpdateMatchUseCase,
+    private readonly deleteMatchUseCase: DeleteMatchUseCase,
   ) {}
 
   create = async (
@@ -154,22 +156,30 @@ export class MatchController {
       const limitNum = Number(req.query['limit']) || 10;
       const filters: ListMatchesDTO['filters'] = {};
 
-      const rawStatus: string | undefined = req.query['status'] as string | undefined;
+      const rawStatus: string | undefined = req.query['status'] as
+        | string
+        | undefined;
       if (rawStatus !== undefined) {
         filters.status = rawStatus;
       }
 
-      const rawClubId: string | undefined = req.query['clubId'] as string | undefined;
+      const rawClubId: string | undefined = req.query['clubId'] as
+        | string
+        | undefined;
       if (rawClubId !== undefined) {
         filters.clubId = rawClubId;
       }
 
-      const rawDateFrom: string | undefined = req.query['dateFrom'] as string | undefined;
+      const rawDateFrom: string | undefined = req.query['dateFrom'] as
+        | string
+        | undefined;
       if (rawDateFrom !== undefined) {
         filters.dateFrom = new Date(rawDateFrom);
       }
 
-      const rawDateTo: string | undefined = req.query['dateTo'] as string | undefined;
+      const rawDateTo: string | undefined = req.query['dateTo'] as
+        | string
+        | undefined;
       if (rawDateTo !== undefined) {
         filters.dateTo = new Date(rawDateTo);
       }
@@ -215,11 +225,8 @@ export class MatchController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const match = await this.matchRepository.findById(req.params['matchId']!);
-      if (!match) {
-        throw new NotFoundError('Partido no encontrado');
-      }
-      res.json(MatchMapper.toResponse(match));
+      const result = await this.getMatchUseCase.execute(req.params['matchId']!);
+      res.json(result);
     } catch (error) {
       next(error);
     }
@@ -231,14 +238,10 @@ export class MatchController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const match = await this.matchRepository.findById(req.params['matchId']!);
-      if (!match) {
-        throw new NotFoundError('Partido no encontrado');
-      }
-      if (match.creatorId !== req.user!.userId) {
-        throw new ValidationError('Solo el creador puede eliminar el partido');
-      }
-      await this.matchRepository.delete(req.params['matchId']!);
+      await this.deleteMatchUseCase.execute(
+        req.params['matchId']!,
+        req.user!.userId,
+      );
       res.status(204).send();
     } catch (error) {
       next(error);
@@ -251,31 +254,34 @@ export class MatchController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const match = await this.matchRepository.findById(req.params['matchId']!);
-      if (!match) {
-        throw new NotFoundError('Partido no encontrado');
+      const dto: UpdateMatchDTO = {
+        matchId: req.params['matchId']!,
+      };
+
+      if (req.body['clubId'] !== undefined) {
+        dto.clubId = req.body['clubId'];
       }
-      if (match.creatorId !== req.user!.userId) {
-        throw new ValidationError('Solo el creador puede editar el partido');
+      if (req.body['dateTime'] !== undefined) {
+        dto.dateTime = req.body['dateTime'];
+      }
+      if (req.body['title'] !== undefined) {
+        dto.title = req.body['title'];
+      }
+      if (req.body['durationMinutes'] !== undefined) {
+        dto.durationMinutes = req.body['durationMinutes'];
+      }
+      if (req.body['maxPlayers'] !== undefined) {
+        dto.maxPlayers = req.body['maxPlayers'];
+      }
+      if (req.body['level'] !== undefined) {
+        dto.level = req.body['level'];
       }
 
-      const updated = Match.reconstitute({
-        id: match.id,
-        creatorId: match.creatorId,
-        creatorEmail: match.creatorEmail,
-        clubId: req.body['clubId'] ?? match.clubId,
-        dateTime: req.body['dateTime'] ?? match.dateTime,
-        title: req.body['title'] ?? match.title,
-        durationMinutes: req.body['durationMinutes'] ?? match.durationMinutes,
-        status: match.status,
-        maxPlayers: req.body['maxPlayers'] ?? match.maxPlayers,
-        level: req.body['level'] ?? match.level,
-        players: [...match.players],
-        createdAt: match.createdAt,
-      });
-
-      await this.matchRepository.save(updated);
-      res.json(MatchMapper.toResponse(updated));
+      const result = await this.updateMatchUseCase.execute(
+        dto,
+        req.user!.userId,
+      );
+      res.json(result);
     } catch (error) {
       next(error);
     }

@@ -3,6 +3,7 @@ export interface UserResponseDTO {
   email: string;
   name: string;
   level: string;
+  role: string;
   photoUrl: string | undefined;
   phone: string | undefined;
   createdAt: Date;

@@ -26,6 +26,10 @@ export class TypeOrmClubRepository implements IClubRepository {
     return orm ? this.toDomain(orm) : null;
   }
 
+  async delete(id: string): Promise<void> {
+    await this.ormRepo.delete(id);
+  }
+
   private toDomain(orm: ClubOrmEntity): Club {
     return Club.reconstitute({
       id: orm.id,

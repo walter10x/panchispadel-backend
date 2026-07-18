@@ -32,8 +32,12 @@ export class RefreshTokenUseCase {
       }
 
       const email = user.email.toString();
-      const name = (payload as Record<string, unknown>)['name'] ?? user.name;
-      const newPayload = { userId: user.id, email, name: name as string };
+      const newPayload = {
+        userId: user.id,
+        email,
+        name: user.name,
+        role: user.role.toString(),
+      };
 
       const newAccessToken = jwt.sign(newPayload, env.JWT_ACCESS_SECRET, {
         expiresIn: parseSeconds(env.JWT_ACCESS_EXPIRES_IN),

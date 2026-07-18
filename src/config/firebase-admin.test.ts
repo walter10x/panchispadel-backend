@@ -2,23 +2,21 @@ import { FirebaseAdminService } from './firebase-admin';
 import { IDeviceTokenRepository } from '../modules/device-tokens/domain/device-token.repository';
 import { DeviceToken } from '../modules/device-tokens/domain/device-token.entity';
 
-jest.mock('firebase-admin', () => {
-  const mockSendEachForMulticast = jest.fn();
-  return {
-    initializeApp: jest.fn(),
-    credential: {
-      cert: jest.fn(),
-    },
-    messaging: jest.fn(() => ({
-      sendEachForMulticast: mockSendEachForMulticast,
-    })),
-    __mockSendEachForMulticast: mockSendEachForMulticast,
-  };
-});
+const mockApps: Array<{ name: string }> = [];
+const mockSendEachForMulticast = jest.fn();
 
-import admin from 'firebase-admin';
-const mockSendEachForMulticast =
-  (admin as any).__mockSendEachForMulticast;
+jest.mock('firebase-admin', () => ({
+  get apps() {
+    return mockApps;
+  },
+  initializeApp: jest.fn(),
+  credential: {
+    cert: jest.fn(),
+  },
+  messaging: jest.fn(() => ({
+    sendEachForMulticast: mockSendEachForMulticast,
+  })),
+}));
 
 function createMockRepo(): jest.Mocked<IDeviceTokenRepository> {
   return {
@@ -50,6 +48,8 @@ function makeToken(
 describe('FirebaseAdminService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockApps.length = 0;
+    mockApps.push({ name: '[DEFAULT]' });
   });
 
   it('envía notificación push a todos los tokens del usuario', async () => {
@@ -84,6 +84,18 @@ describe('FirebaseAdminService', () => {
     const service = new FirebaseAdminService(repo);
     await service.sendToUser('user-1', 'Título', 'Mensaje');
 
+    expect(mockSendEachForMulticast).not.toHaveBeenCalled();
+  });
+
+  it('omite push si Firebase no está inicializado', async () => {
+    mockApps.length = 0;
+    const repo = createMockRepo();
+    repo.findByUser.mockResolvedValue([makeToken()]);
+
+    const service = new FirebaseAdminService(repo);
+    await service.sendToUser('user-1', 'Título', 'Mensaje');
+
+    expect(repo.findByUser).not.toHaveBeenCalled();
     expect(mockSendEachForMulticast).not.toHaveBeenCalled();
   });
 

@@ -61,7 +61,7 @@ export class FirebaseAdminService implements IPushNotificationService {
   ): Promise<void> {
     ensureInitialized();
 
-    if (admin.apps.length === 0) {
+    if (admin.apps == null || admin.apps.length === 0) {
       console.log('[Firebase] Sin inicializar — omitiendo push');
       return;
     }

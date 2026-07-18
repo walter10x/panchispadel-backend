@@ -33,7 +33,12 @@ export class LoginUserUseCase {
     }
 
     const email = user.email.toString();
-    const payload = { userId: user.id, email, name: user.name };
+    const payload = {
+      userId: user.id,
+      email,
+      name: user.name,
+      role: user.role.toString(),
+    };
 
     const accessToken = jwt.sign(payload, env.JWT_ACCESS_SECRET, {
       expiresIn: parseSeconds(env.JWT_ACCESS_EXPIRES_IN),

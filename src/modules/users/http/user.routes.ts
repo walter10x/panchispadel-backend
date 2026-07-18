@@ -15,6 +15,7 @@ interface UserControllerHandlers {
 interface UserMiddlewares {
   validateBody: (schema: ZodSchema) => RequestHandler;
   authMiddleware: RequestHandler;
+  authRateLimiter: RequestHandler;
 }
 
 export function createUserRoutes(
@@ -25,12 +26,14 @@ export function createUserRoutes(
 
   router.post(
     '/register',
+    middlewares.authRateLimiter,
     middlewares.validateBody(registerUserSchema),
     controllers.register,
   );
 
   router.post(
     '/login',
+    middlewares.authRateLimiter,
     middlewares.validateBody(loginUserSchema),
     controllers.login,
   );

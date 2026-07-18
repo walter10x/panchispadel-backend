@@ -21,6 +21,9 @@ import { CancelMatchUseCase } from '../modules/matches/application/cancel-match.
 import { ConfirmPlayerUseCase } from '../modules/matches/application/confirm-player.use-case';
 import { RejectPlayerUseCase } from '../modules/matches/application/reject-player.use-case';
 import { ListMatchesUseCase } from '../modules/matches/application/list-matches.use-case';
+import { GetMatchUseCase } from '../modules/matches/application/get-match.use-case';
+import { UpdateMatchUseCase } from '../modules/matches/application/update-match.use-case';
+import { DeleteMatchUseCase } from '../modules/matches/application/delete-match.use-case';
 import { MatchController } from '../modules/matches/http/match.controller';
 import { createMatchRoutes } from '../modules/matches/http/match.routes';
 import { MatchOrmEntity } from '../modules/matches/infrastructure/match-orm.entity';
@@ -41,9 +44,16 @@ import { ResultOrmEntity } from '../modules/results/infrastructure/result-orm.en
 import { TypeOrmClubRepository } from '../modules/clubs/infrastructure/typeorm-club.repository';
 import { ListClubsUseCase } from '../modules/clubs/application/list-clubs.use-case';
 import { GetClubUseCase } from '../modules/clubs/application/get-club.use-case';
+import { CreateClubUseCase } from '../modules/clubs/application/create-club.use-case';
+import { UpdateClubUseCase } from '../modules/clubs/application/update-club.use-case';
+import { DeleteClubUseCase } from '../modules/clubs/application/delete-club.use-case';
 import { ClubController } from '../modules/clubs/http/club.controller';
 import { createClubRoutes } from '../modules/clubs/http/club.routes';
 import { ClubOrmEntity } from '../modules/clubs/infrastructure/club-orm.entity';
+import { ListUsersUseCase } from '../modules/users/application/list-users.use-case';
+import { UpdateUserRoleUseCase } from '../modules/users/application/update-user-role.use-case';
+import { AdminController } from '../modules/admin/http/admin.controller';
+import { createAdminRoutes } from '../modules/admin/http/admin.routes';
 
 // Notifications
 import { TypeOrmNotificationRepository } from '../modules/notifications/infrastructure/typeorm-notification.repository';
@@ -65,6 +75,8 @@ import { FirebaseAdminService } from './firebase-admin';
 // Shared middleware
 import { authMiddleware } from '../shared/infrastructure/http/auth-middleware';
 import { validateBody } from '../shared/infrastructure/http/validate-middleware';
+import { authRateLimiter } from '../shared/infrastructure/http/auth-rate-limit.middleware';
+import { requireAdmin } from '../shared/infrastructure/http/require-admin.middleware';
 import { errorHandler } from '../shared/infrastructure/http/error-handler';
 
 export function registerRoutes(app: Express, wsGateway?: IWsGateway): void {
@@ -87,6 +99,7 @@ export function registerRoutes(app: Express, wsGateway?: IWsGateway): void {
     createUserRoutes(userController, {
       validateBody,
       authMiddleware,
+      authRateLimiter,
     }),
   );
 
@@ -110,6 +123,9 @@ export function registerRoutes(app: Express, wsGateway?: IWsGateway): void {
   const confirmPlayerUseCase = new ConfirmPlayerUseCase(matchRepo, notifService, wsGateway);
   const rejectPlayerUseCase = new RejectPlayerUseCase(matchRepo, notifService, wsGateway);
   const listMatchesUseCase = new ListMatchesUseCase(matchRepo);
+  const getMatchUseCase = new GetMatchUseCase(matchRepo);
+  const updateMatchUseCase = new UpdateMatchUseCase(matchRepo);
+  const deleteMatchUseCase = new DeleteMatchUseCase(matchRepo);
   const matchController = new MatchController(
     createMatchUseCase,
     joinMatchUseCase,
@@ -118,7 +134,9 @@ export function registerRoutes(app: Express, wsGateway?: IWsGateway): void {
     listMatchesUseCase,
     confirmPlayerUseCase,
     rejectPlayerUseCase,
-    matchRepo,
+    getMatchUseCase,
+    updateMatchUseCase,
+    deleteMatchUseCase,
   );
   app.use('/api/matches', createMatchRoutes(matchController));
 
@@ -144,8 +162,30 @@ export function registerRoutes(app: Express, wsGateway?: IWsGateway): void {
   );
   const listClubsUseCase = new ListClubsUseCase(clubRepo);
   const getClubUseCase = new GetClubUseCase(clubRepo);
+  const createClubUseCase = new CreateClubUseCase(clubRepo);
+  const updateClubUseCase = new UpdateClubUseCase(clubRepo);
+  const deleteClubUseCase = new DeleteClubUseCase(clubRepo);
   const clubController = new ClubController(listClubsUseCase, getClubUseCase);
   app.use('/api/clubs', createClubRoutes({ clubController }));
+
+  // ─── Admin ──────────────────────────────────────────────────────────
+  const listUsersUseCase = new ListUsersUseCase(userRepo);
+  const updateUserRoleUseCase = new UpdateUserRoleUseCase(userRepo);
+  const adminController = new AdminController(
+    createClubUseCase,
+    updateClubUseCase,
+    deleteClubUseCase,
+    listUsersUseCase,
+    updateUserRoleUseCase,
+  );
+  app.use(
+    '/api/admin',
+    createAdminRoutes(adminController, {
+      authMiddleware,
+      requireAdmin,
+      validateBody,
+    }),
+  );
 
   // ─── Notifications ──────────────────────────────────────────────────
   const getUserNotificationsUseCase = new GetUserNotificationsUseCase(notifRepo);

@@ -12,6 +12,7 @@ describe('GetClubUseCase', () => {
       findById: jest.fn(),
       findAll: jest.fn(),
       findByName: jest.fn(),
+      delete: jest.fn(),
     };
     useCase = new GetClubUseCase(repository);
   });

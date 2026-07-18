@@ -2,6 +2,7 @@ import { v4 } from 'uuid';
 import { BaseEntity } from '../../../shared/domain/base.entity';
 import { UserEmail } from './value-objects/user-email';
 import { UserLevel } from './value-objects/user-level';
+import { UserRole } from './value-objects/user-role';
 
 export interface CreateUserParams {
   email: string;
@@ -10,6 +11,7 @@ export interface CreateUserParams {
   level: string | undefined;
   photoUrl: string | undefined;
   phone: string | undefined;
+  role?: string;
 }
 
 export interface ReconstituteUserParams {
@@ -20,6 +22,7 @@ export interface ReconstituteUserParams {
   level: string;
   photoUrl: string | undefined;
   phone: string | undefined;
+  role: string;
   createdAt: Date;
 }
 
@@ -28,6 +31,7 @@ export class User extends BaseEntity<string> {
   private _passwordHash: string;
   private _name: string;
   private _level: UserLevel;
+  private _role: UserRole;
   private _photoUrl: string | undefined;
   private _phone: string | undefined;
 
@@ -37,6 +41,7 @@ export class User extends BaseEntity<string> {
     passwordHash: string,
     name: string,
     level: UserLevel,
+    role: UserRole,
     photoUrl: string | undefined,
     phone: string | undefined,
     createdAt?: Date,
@@ -46,6 +51,7 @@ export class User extends BaseEntity<string> {
     this._passwordHash = passwordHash;
     this._name = name;
     this._level = level;
+    this._role = role;
     this._photoUrl = photoUrl;
     this._phone = phone;
   }
@@ -59,6 +65,7 @@ export class User extends BaseEntity<string> {
       params.level !== undefined
         ? UserLevel.from(params.level)
         : UserLevel.default(),
+      params.role !== undefined ? UserRole.from(params.role) : UserRole.player(),
       params.photoUrl,
       params.phone,
     );
@@ -71,6 +78,7 @@ export class User extends BaseEntity<string> {
       params.passwordHash,
       params.name,
       UserLevel.from(params.level),
+      UserRole.from(params.role),
       params.photoUrl,
       params.phone,
       params.createdAt,
@@ -93,6 +101,10 @@ export class User extends BaseEntity<string> {
     return this._level;
   }
 
+  get role(): UserRole {
+    return this._role;
+  }
+
   get photoUrl(): string | undefined {
     return this._photoUrl;
   }
@@ -105,6 +117,10 @@ export class User extends BaseEntity<string> {
     this._name = name;
     this._level = UserLevel.from(level);
     this._photoUrl = photoUrl;
+  }
+
+  changeRole(role: string): void {
+    this._role = UserRole.from(role);
   }
 
   updatePassword(newHash: string): void {

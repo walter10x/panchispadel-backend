@@ -81,4 +81,47 @@ export class Club extends BaseEntity<string> {
       params.createdAt,
     );
   }
+
+  update(params: {
+    name?: string;
+    address?: string;
+    phone?: string;
+    courtsCount?: number;
+    latitude?: number;
+    longitude?: number;
+  }): Club {
+    const name = params.name ?? this.name;
+    const address = params.address ?? this.address;
+    const courtsCount = params.courtsCount ?? this.courtsCount;
+
+    if (!name || name.trim().length === 0) {
+      throw new ValidationError('El nombre del club es obligatorio');
+    }
+    if (!Number.isInteger(courtsCount) || courtsCount < 1) {
+      throw new ValidationError('La cantidad de pistas debe ser al menos 1');
+    }
+
+    return Club.reconstitute({
+      id: this.id,
+      name: name.trim(),
+      address,
+      courtsCount,
+      createdAt: this.createdAt,
+      ...(params.phone !== undefined
+        ? { phone: params.phone }
+        : this.phone !== undefined
+          ? { phone: this.phone }
+          : {}),
+      ...(params.latitude !== undefined
+        ? { latitude: params.latitude }
+        : this.latitude !== undefined
+          ? { latitude: this.latitude }
+          : {}),
+      ...(params.longitude !== undefined
+        ? { longitude: params.longitude }
+        : this.longitude !== undefined
+          ? { longitude: this.longitude }
+          : {}),
+    });
+  }
 }

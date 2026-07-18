@@ -7,6 +7,11 @@ import { env } from './config/env';
 
 const app = express();
 
+// Necesario detrás de Traefik/Dokploy para rate-limit por IP real
+if (env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // Security & parsing middleware
 app.use(helmet());
 if (env.NODE_ENV === 'production') {

@@ -9,6 +9,7 @@ export class UserMapper {
       email: user.email.toString(),
       name: user.name,
       level: user.level.toString(),
+      role: user.role.toString(),
       photoUrl: user.photoUrl,
       phone: user.phone,
       createdAt: user.createdAt,
@@ -22,6 +23,7 @@ export class UserMapper {
     orm.passwordHash = user.passwordHash;
     orm.name = user.name;
     orm.level = user.level.toString();
+    orm.role = user.role.toString();
     orm.photoUrl = user.photoUrl ?? null;
     orm.phone = user.phone ?? null;
     orm.createdAt = user.createdAt;
@@ -35,6 +37,7 @@ export class UserMapper {
       passwordHash: orm.passwordHash,
       name: orm.name,
       level: orm.level,
+      role: orm.role ?? 'player',
       photoUrl: orm.photoUrl ?? undefined,
       phone: orm.phone ?? undefined,
       createdAt: orm.createdAt,

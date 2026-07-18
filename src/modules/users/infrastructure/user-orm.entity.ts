@@ -27,6 +27,9 @@ export class UserOrmEntity {
   @Column({ type: 'varchar', length: 20, nullable: true })
   phone!: string | null;
 
+  @Column({ type: 'varchar', length: 20, default: 'player' })
+  role!: string;
+
   @Column({ type: 'timestamp', name: 'created_at' })
   createdAt!: Date;
 }

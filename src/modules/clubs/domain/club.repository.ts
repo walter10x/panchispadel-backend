@@ -5,4 +5,5 @@ export interface IClubRepository {
   findById(id: string): Promise<Club | null>;
   findAll(): Promise<Club[]>;
   findByName(name: string): Promise<Club | null>;
+  delete(id: string): Promise<void>;
 }

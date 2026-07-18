@@ -75,6 +75,7 @@ describe('User', () => {
         level: 'avanzado',
         photoUrl: 'https://example.com/photo.jpg',
         phone: '+541112345678',
+        role: 'player',
         createdAt,
       });
 
@@ -83,6 +84,7 @@ describe('User', () => {
       expect(user.passwordHash).toBe('$2a$10$hashedvalue');
       expect(user.name).toBe('Existing User');
       expect(user.level.toString()).toBe('avanzado');
+      expect(user.role.toString()).toBe('player');
       expect(user.photoUrl).toBe('https://example.com/photo.jpg');
       expect(user.phone).toBe('+541112345678');
       expect(user.createdAt).toEqual(createdAt);
@@ -97,6 +99,7 @@ describe('User', () => {
         level: 'principiante',
         photoUrl: undefined,
         phone: undefined,
+        role: 'player',
         createdAt: new Date(),
       });
 
@@ -112,10 +115,23 @@ describe('User', () => {
         level: 'principiante',
         photoUrl: undefined,
         phone: undefined,
+        role: 'admin',
         createdAt: new Date(),
       });
 
       expect(user.phone).toBeUndefined();
+      expect(user.role.isAdmin).toBe(true);
+    });
+  });
+
+  describe('changeRole', () => {
+    it('cambia el rol del usuario', () => {
+      const user = User.create(validParams);
+      expect(user.role.toString()).toBe('player');
+
+      user.changeRole('admin');
+
+      expect(user.role.toString()).toBe('admin');
     });
   });
 
