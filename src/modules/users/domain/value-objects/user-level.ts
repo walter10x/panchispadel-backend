@@ -1,6 +1,14 @@
 import { ValueObject } from '../../../../shared/domain/value-object';
 import { ValidationError } from '../../../../shared/domain/errors';
 
+/**
+ * Códigos persistidos en API/BD (no cambiar sin migración).
+ * Escala de pádel 1–7 (UI, rangos continuos sin huecos):
+ *   principiante → 1.0–1.9 Iniciación
+ *   medio        → 2.0–3.9 Intermedio
+ *   avanzado     → 4.0–5.9 Avanzado
+ *   pro          → 6.0–7.0 Profesional
+ */
 export type UserLevelType = 'principiante' | 'medio' | 'avanzado' | 'pro';
 
 export const VALID_LEVELS: readonly UserLevelType[] = [

@@ -1,6 +1,10 @@
 import { ValueObject } from '../../../../shared/domain/value-object';
 import { ValidationError } from '../../../../shared/domain/errors';
 
+/**
+ * Mismos códigos que UserLevel. UI (escala 1–7):
+ * principiante 1.0–1.9 · medio 2.0–3.9 · avanzado 4.0–5.9 · pro 6.0–7.0
+ */
 export type MatchLevelType =
   | 'principiante'
   | 'medio'
